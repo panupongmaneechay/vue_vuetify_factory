@@ -39,47 +39,58 @@
   </template>
   
   <script>
-  export default {
-    data() {
-      return {
-        headers: [
-          { text: 'Part', align: 'start', value: 'name' },
-          { text: 'Part A', value: 'parts[0].value' },
-          { text: 'Part B', value: 'parts[1].value' },
-          { text: 'Part C', value: 'parts[2].value' },
-          { text: 'Edit Time', value: 'editTime' },
-        ],
-        data: [
-          { name: 'Part A', parts: [{ name: 'Part A', value: '' }, { name: 'Part B', value: '3' }, { name: 'Part C', value: '4' }], editTime: '' },
-          { name: 'Part B', parts: [{ name: 'Part A', value: '4' }, { name: 'Part B', value: '' }, { name: 'Part C', value: '2' }], editTime: '' },
-          { name: 'Part C', parts: [{ name: 'Part A', value: '5' }, { name: 'Part B', value: '6' }, { name: 'Part C', value: '' }], editTime: '' },
-        ],
-        addPartModal: false,
-        editModal: false,
-        editedItem: {
-          name: '',
-          parts: [],
-        },
-      };
+import axios from 'axios';
+
+export default {
+  data() {
+    return {
+      headers: [
+        { text: 'Part', align: 'start', value: 'name' },
+        { text: 'Part A', value: 'parts[0].value' },
+        { text: 'Part B', value: 'parts[1].value' },
+        { text: 'Part C', value: 'parts[2].value' },
+        { text: 'Edit Time', value: 'editTime' },
+      ],
+      data: [],
+      addPartModal: false,
+      editModal: false,
+      editedItem: {
+        name: '',
+        parts: [],
+      },
+    };
+  },
+  methods: {
+    openAddPartModal() {
+      this.addPartModal = true;
     },
-    methods: {
-      openAddPartModal() {
-        this.addPartModal = true;
-      },
-      openEditModal(item) {
-        this.editedItem = { ...item };
-        this.editModal = true;
-      },
-      saveAddPart() {
-        // Implement saveAddPart logic
-      },
-      saveEdit() {
-        // Implement saveEdit logic
-        this.editModal = false;
-      },
+    openEditModal(item) {
+      this.editedItem = { ...item };
+      this.editModal = true;
     },
-  };
-  </script>
+    async fetchData() {
+      try {
+        const response = await axios.get('http://127.0.0.1:8000/data/part_all');
+        this.data = response.data; // Assuming the API returns an array of objects similar to your existing 'data' structure
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    },
+    saveAddPart() {
+      // Implement saveAddPart logic
+    },
+    saveEdit() {
+      // Implement saveEdit logic
+      this.editModal = false;
+    },
+  },
+  mounted() {
+    // Fetch data when the component is mounted
+    this.fetchData();
+  },
+};
+</script>
+
   
   <style scoped>
   /* Add any custom styles if needed */
